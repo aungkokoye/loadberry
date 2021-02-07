@@ -1,0 +1,123 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Uploaded File List{% endblock %}
+
+{% block body %}
+
+<div class="container">
+
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('index')}}">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Uploaded File List</li>
+        </ol>
+    </nav>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    <div class="row">
+        <div class="col-md-7">
+            <h1> Uploaded File List  ({{ pagination.getTotalItemCount }}) </h1>
+        </div>
+        <div class="col-md-5">
+            <form method="get">
+                <div class="input-group mb-3 pt-2">
+                    <input type="text" class="form-control" placeholder="Search by file name or description ..." name="search"
+                           {% if search|length > 1%} value="{{ search }}"{% endif %} aria-label="Recipient's username" aria-describedby="basic-addon2">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="submit">Search</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+    <br>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>File Name</th>
+            <th>Description</th>
+            <th> Size </th>
+            <th> Created At</th>
+            <th> Updated At</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for fileUpload in pagination %}
+            <tr>
+                <td>{{ fileUpload.fileName }}</td>
+                <td>{{ fileUpload.description }}</td>
+                <td>{{ fileUpload.sizeInMB }}</td>
+                <td>{{ fileUpload.createdAt|date('d M Y') }}</td>
+                <td>{{ fileUpload.updatedAt|date('d M Y') }}</td>
+                <td>
+                    <a title="download" href="{{ path('panel_download', {'id': fileUpload.id}) }}">
+                        <i class="fas fa-file-download"></i>
+                    </a>
+                    <a title="update" href="{{ path('panel_update',
+                        {'id': fileUpload.id, 'search' : search, 'page' : page}) }}">
+                        <i class="fas fa-pencil-alt"></i>
+                    </a>
+                    <a class="delete-file-upload" href="#" data-id="{{ fileUpload.id }}">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {{ knp_pagination_render(pagination) }}
+
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(document).ready(function () {
+            Panel.bindEvents();
+        });
+
+        let Panel= {
+            bindEvents: function () {
+                $(document).on("click", ".delete-file-upload", function (e) {
+                    e.preventDefault();
+                    if (confirm('Are you sure to delete this item?')) {
+                        let id = $(this).data('id');
+                        Panel.deleteAjaxCall(id);
+                    }
+                });
+            },
+            deleteAjaxCall: function (id) {
+                $.ajax({
+                    url: '/panel/ajax-delete/'+id,
+                    type: 'DELETE',
+                    success: function (data) {
+                        if(data.result !== 'success') {
+                            console.log(data.result);
+                        }
+                        location.reload();
+                    }
+                });
+            },
+        }
+    </script>
+{% endblock %}

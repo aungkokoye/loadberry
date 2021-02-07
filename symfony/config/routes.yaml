@@ -1,0 +1,36 @@
+index:
+    path: /
+    controller: App\Controller\DefaultController::index
+
+app_login:
+    path: /login
+    controller: App\Controller\SecurityController::login
+
+app_logout:
+    path: /logout
+    controller: App\Controller\SecurityController::logout
+
+panel_index:
+    path: /panel
+    controller: App\Controller\PanelController::index
+
+panel_download:
+    path: /panel/download/{id}
+    controller: App\Controller\PanelController::download
+    requirements:
+        id: '\d+'
+
+panel_update:
+    path: /panel/update/{id}
+    controller: App\Controller\PanelController::update
+    requirements:
+        id: '\d+'
+
+panel_delete:
+    path:     /panel/ajax-delete/{id}
+    controller: App\Controller\PanelController::ajaxDelete
+    requirements:
+        id: '\d+'
+    methods:  [DELETE]
+    options:
+        expose: true

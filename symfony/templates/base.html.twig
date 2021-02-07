@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Welcome!{% endblock %}</title>
+    {% block stylesheets %}
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+        <script src="https://kit.fontawesome.com/e847c4c867.js" crossorigin="anonymous"></script>
+        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    {% endblock %}
+</head>
+<body>
+
+<nav class="navbar navbar-expand-sm bg-light">
+
+    <a class="navbar-brand" href="{{ path('index') }}">File Manager</a>
+
+
+    <ul class="navbar-nav ml-auto">
+
+        <li class="nav-item">
+            <a class="nav-link" title="panel" href="{{ path('panel_index') }}">
+                <i class="fas fa-cogs"></i>
+            </a>
+        </li>
+
+        {%if app.user %}
+        <li class="nav-item">
+            <a class="nav-link" title="logout" href="{{ path('app_logout') }}">
+                <i class="fas fa-sign-out-alt"></i>
+            </a>
+        </li>
+        {% endif %}
+
+    </ul>
+</nav>
+
+<div class="container">
+
+    <br>
+
+    {% block body %}{% endblock %}
+
+</div>
+
+{% block javascripts %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+{% endblock %}
+</body>
+</html>

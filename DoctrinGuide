@@ -1,0 +1,26 @@
+** bin/console **
+
+create entity
+make:entity
+
+check mapping file and database schema are validate or not
+doctrine:schema:validate
+
+run migration status
+doctrine:migrations:status
+
+create migration
+doctrine:migrations:diff
+
+run latest migration
+doctrine:migrations:migrate
+
+run by migration version  --up/--down
+doctrine:migrations:execute --up 20200314223127 | --down 20200314223127
+
+new blank migration file generate
+doctrine:migrations:generate
+
+check need to run migration
+doctrine:migrations:up-to-date
+

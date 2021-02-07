@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Update File{% endblock %}
+
+{% block body %}
+    <div class="container">
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('index')}}">Home</a></li>
+                <li class="breadcrumb-item">
+                    <a href="{{ path('panel_index',{'search' : search, 'page' : page})}}">
+                        Uploaded File List
+                    </a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Update Files </li>
+            </ol>
+        </nav>
+
+        <h1> Update File </h1>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        <br>
+
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+                {{ form_errors(form) }}
+                {{ form_row(form.description) }}
+                <button type="submit" class="btn btn-primary">Save</button>
+                {{ form_end(form) }}
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
+
