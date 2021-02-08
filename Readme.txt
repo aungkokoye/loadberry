@@ -1,28 +1,95 @@
-[Symfony 4 install]
+Assume Apache web server is running with MySql 8.0
 
-$ composer create-project symfony/skeleton symfony
+Move that file to site-available for Apache config
+vhost->000-default.conf
 
-
-[create .htaccess]
-$ cd symfony
-$ composer require symfony/apache-pack
-
-
-Edit in symfony/config/packages/doctrine.yaml
-Line:5 	server_version: '5.7' (**  should match your mysql version in docker-compose.yml)
-
-Edit in symfony/.env
-line:27 		DATABASE_URL=mysql://<<user_name>>:<<password>>@<<docker_service>>:<<port>>/
-<<database_name>>
+Here is MySql connection string
+In /var/www/html/symfony/.env
+line:27 DATABASE_URL=mysql://<<user_name>>:<<password>>@<<docker_service>>:<<port>>/<<database_name>>
 Example	DATABASE_URL=mysql://root:root@mysql:3306/db
 
-Inside Docker machine (/var/www/html)
+$ cd /var/www/html
 $ php bin/console doctrine:database:create  (**  That create database)
+$ php bin/console doctrine:migrations:migrate  ( ** run migration)
 
-[Xdebug config in Phpstorm IDE]
+Create New User
+$ cd /var/www/html
+$ docker exec -it webapp bash
+$ php bin/console app:create-user <email> <password> (** email is acts like username)
 
-url: https://gist.github.com/chadrien/c90927ec2d160ffea9c4
+Change password
+$ cd /var/www/html
+$ php bin/console app:update-pass <email> <password>
 
-PHPStorm IDE go to: Languages & Frameworks > PHP > Debug > DBGp Proxy and set the following settings:
-Host: your IP address  (get from host machine -** $ ifconfig)
-Port: 9000
+Composer Update
+$ cd symfony
+$ composer update
+
+Create folder for file upload
+$ cd /var/www/html/symfony/files
+$ mkdir files
+
+File Permission
+Make sure web-sever can readable, writeable and executable on
+/var/www/html/symfony/files where all uploded files will be stored.
+
+User can upload the files in index page. Max file size is 210 MB.
+
+If user wants uploaded file list view, click cogs icon form upper right conner.
+User must login to view that page. Note that if user makes more than 3 failure login Attempts, need to wait 5 mins
+to login again.
+
+======================================================================================================================
+
+For Local ENV with docker compose
+Need to install docker compose on local machine.
+
+Local Machine
+$ cd <project root>
+$ docker-compose up --build -d
+
+$ cd symfony
+$ composer update
+
+Here is MySql connection string
+In /var/www/html/symfony/.env
+line:27 DATABASE_URL=mysql://<<user_name>>:<<password>>@<<docker_service>>:<<port>>/<<database_name>>
+Example	DATABASE_URL=mysql://root:root@mysql:3306/db
+
+$ docker exec -it webapp bash
+$ php bin/console doctrine:database:create  (**  That create database)
+$ php bin/console doctrine:migrations:migrate  ( ** run migration)
+
+Create New User
+$ php bin/console app:create-user <email> <password> (** email is acts like username)
+
+Change password
+$ php bin/console app:update-pass <email> <password>
+
+Create folder for file upload
+$ docker exec -it webapp bash
+$ mkdir files
+
+File Permission
+Make sure docker can readable, writeable and executable on
+symfony/files where all uploded files will be stored.
+$ chmod 774 files
+$ chown files www-data:www-data
+
+
+Website Address for local ENV
+localhost:8750
+
+MySql port for local ENV
+3400
+
+User can upload the files in index page. Max file size is 210 MB.
+
+If user wants uploaded file list view, click cogs icon form upper right conner.
+User must login to view that page. Note that if user makes more than 3 failure login Attempts, need to wait 5 mins
+to login again.
+
+
+
+
+
